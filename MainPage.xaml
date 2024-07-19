@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OpenWeatherApp.MainPage"
+             xmlns:local="clr-namespace:OpenWeatherApp"
+             xmlns:vm="clr-namespace:OpenWeatherApp"
+             BackgroundColor="{DynamicResource SecondaryColor}">
+
+    <ContentPage.BindingContext>
+        <vm:WeatherViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="labelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="TextColor" Value="Gray" />
+            </Style>
+            <Style x:Key="labelResultStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="Margin" Value="10,0,0,0" />
+            </Style>
+
+            <local:WeatherToImageConverter x:Key="weatherToImageConverter" />
+            <local:LongToDateTimeConverter x:Key="longToDatetimeConverter" />
+            <local:FahrenheitToCelciusConverter x:Key="fahrenheitToCelciusConverter" />
+            <local:WeatherViewModel x:Key="weatherViewModel"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+
+        <ScrollView>
+
+            <VerticalStackLayout
+                Spacing="15"
+                Padding="30">
+
+                <VerticalStackLayout.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="LightYellow" Offset="0.1"/>
+                        <GradientStop Color="orange" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </VerticalStackLayout.Background>
+
+                <SearchBar x:Name="_cityEntry"
+                           Placeholder="Enter your location..."
+                           Text="{Binding Title}"
+                           BackgroundColor="White"
+                           CharacterSpacing="3"
+                           HorizontalTextAlignment="Center"
+                           TextColor="Black"
+                           Margin="-5,10,0,10"/>
+
+                <Button BackgroundColor="#d5731d"
+                        BorderColor="White"
+                        BorderWidth="1"
+                        Clicked="OnGetWeatherButtonClicked"
+                        Text="Get Weather"
+                        TextColor="White"
+                        Margin="10,10,10,10"/>
+                <Image
+                    HeightRequest="120"
+                    Source="{Binding WeatherData.Weather[0].Description, Converter={StaticResource weatherToImageConverter}}"
+                    VerticalOptions="Center"
+                    WidthRequest="120"/>
+                <Label FontAttributes="Bold" 
+                       FontSize="70"
+                       Text="{Binding WeatherData.Main.Temperature, StringFormat='{0} °C', Converter={StaticResource fahrenheitToCelciusConverter}}"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       Margin="10,-40,10,10"/>
+
+                <Label FontSize="18" 
+                       Text="{Binding WeatherData.Weather[0].Description, FallbackValue='No description available'}"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       Margin="10,-30,10,10"/>
+                <Label FontSize="20" 
+                       Text="{Binding CurrentDate}"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       Margin="10,-30,10,10"/>
+
+                <Border
+                        Margin="3"
+                        Padding="16"
+                        WidthRequest="300"
+                        BackgroundColor="{DynamicResource CustomGray800}"
+                        Opacity=".8">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18"/>
+                    </Border.StrokeShape>
+                    <StackLayout>
+                        <Label Text="Sunrise"
+                               FontSize="11"
+                               HorizontalOptions="Center"
+                               TextColor="#7D7D7D"/>
+                        <Label FontAttributes="Bold"
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               Text="{Binding WeatherData.Sys.Sunrise, Converter={StaticResource longToDatetimeConverter}}"
+                               TextColor="Black"
+                               Margin="10,10,10,10"/>
+                        <Label Text="Sunset"
+                               FontSize="11"
+                               HorizontalOptions="Center"
+                               TextColor="#7D7D7D"
+                               Margin="10,10,10,10"/>
+                        <Label FontAttributes="Bold"
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               Text="{Binding WeatherData.Sys.Sunset, Converter={StaticResource longToDatetimeConverter}}"
+                               TextColor="Black"/>
+                    </StackLayout>
+                </Border>
+                <Frame Grid.Row="1" Margin="0,10,0,0" Padding="0" CornerRadius="10" HasShadow="True" HeightRequest="120" VerticalOptions="Start">
+                    <Grid
+        Margin="0,20,0,0"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="CenterAndExpand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackLayout
+            HorizontalOptions="CenterAndExpand"
+            Orientation="Vertical"
+            Spacing="10">
+                            <Image Source="humidity.png"
+                                   HeightRequest="30"/>
+                            <StackLayout HorizontalOptions="CenterAndExpand" Spacing="7">
+                                <Label
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    Text="{Binding WeatherData.Main.Humidity, StringFormat='{0} %'}"
+                    TextColor="Black"/>
+                                <Label
+                    FontSize="11"
+                    HorizontalOptions="Center"
+                    Text="Humidity"
+                    TextColor="#7D7D7D" />
+                            </StackLayout>
+                        </StackLayout>
+
+                        <StackLayout
+            Grid.Column="1"
+            HorizontalOptions="CenterAndExpand"
+            Orientation="Vertical"
+            Spacing="10">
+                            <Image Source="wind.png"
+                                   HeightRequest="30"/>
+                            <StackLayout HorizontalOptions="CenterAndExpand" Spacing="7">
+                                <Label
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    Text="{Binding WeatherData.Wind.Speed, StringFormat='{0} m/s'}"
+                    TextColor="Black" />
+                                <Label
+                    FontSize="11"
+                    HorizontalOptions="Center"
+                    Text="Wind"
+                    TextColor="#7D7D7D" />
+                            </StackLayout>
+                        </StackLayout>
+
+                        <StackLayout
+            Grid.Column="2"
+            HorizontalOptions="CenterAndExpand"
+            Orientation="Vertical"
+            Spacing="10">
+                            <Image Source="pressure.png"
+                                   HeightRequest="30"/>
+                            <StackLayout HorizontalOptions="CenterAndExpand" Spacing="7">
+                                <Label
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    Text="{Binding WeatherData.Main.Pressure, StringFormat='{0} hpa'}"
+                    TextColor="Black" />
+                                <Label
+                    FontSize="11"
+                    HorizontalOptions="Center"
+                    Text="Pressure"
+                    TextColor="#7D7D7D" />
+                            </StackLayout>
+                        </StackLayout>
+
+                        <StackLayout
+            Grid.Column="3"
+            HorizontalOptions="CenterAndExpand"
+            Orientation="Vertical"
+            Spacing="10">
+                            <Image Source="cloud.png" 
+                                   HeightRequest="30"/>
+                            <StackLayout HorizontalOptions="CenterAndExpand" Spacing="7">
+                                <Label
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    Text="{Binding WeatherData.Clouds.All, StringFormat='{0} %'}"
+                    TextColor="Black" />
+                                <Label
+                    FontSize="11"
+                    HorizontalOptions="Center"
+                    Text="Cloudiness"
+                    TextColor="#7D7D7D" />
+                            </StackLayout>
+                        </StackLayout>
+
+                    </Grid>
+                </Frame>
+
+                <CollectionView Margin="0,10,0,0" 
+                ItemsSource="{Binding ForecastData.List}"
+                ItemsLayout="HorizontalList">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="5" Padding="5" CornerRadius="10" HasShadow="True" BackgroundColor="LightYellow">
+                                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Image HeightRequest="40" 
+                           Source="{Binding Weather[0].Description, Converter={StaticResource weatherToImageConverter}}"
+                           VerticalOptions="Center"
+                           Margin="0,5,0,0"
+                           WidthRequest="40"/>
+                                    <Label Margin="0,12,0,0" Text="{Binding Main.Temp, StringFormat='{0:F0}°C', FallbackValue='N/A'}" FontSize="Small" TextColor="Black" HorizontalOptions="Center"/>
+                                    <Label Margin="0,12,0,0" Text="{Binding Weather[0].Description, FallbackValue='No data', StringFormat=' {0}'}" FontSize="Small" TextColor="Black" HorizontalOptions="Center"/>
+                                    <Label Margin="0,12,0,0" Text="{Binding DtTxt, Converter={StaticResource longToDatetimeConverter}, StringFormat=' {0}'}" FontSize="Small" TextColor="Black" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
