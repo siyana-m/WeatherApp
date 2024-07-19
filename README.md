@@ -53,6 +53,7 @@ OpenWeatherApp/
 
 - [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
+- [MAUI](https://docs.microsoft.com/en-us/dotnet/maui/get-started/installation)
 
 ## Setup and Installation
 
